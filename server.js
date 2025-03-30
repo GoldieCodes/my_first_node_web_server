@@ -1,5 +1,6 @@
 // Import Node.js built-in HTTP module
 const http = require("http")
+const date = require("./index")
 
 // Define the port where our server will run
 const PORT = 3000
@@ -15,7 +16,8 @@ const server = http.createServer((request, response) => {
     response.writeHead(200, { "Content-Type": "text/html" })
     // Home page
     response.end(
-      "<h1>Welcome to my first Node.js server!</h1><p>This server is created using only Node.js built-in modules.</p>"
+      "<h1>Welcome to my first Node.js server!</h1><p>This server is created using only Node.js built-in modules.</p>" +
+        `<p>${date.name},  the time is ${date.theDate()}</p>`
     )
   } else if (request.url === "/about") {
     // Set the response header
