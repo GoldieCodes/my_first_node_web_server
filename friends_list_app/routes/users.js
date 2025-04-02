@@ -22,16 +22,31 @@ let users = [
   },
 ]
 
-// GET request: Retrieve all users
+// GET request: Retrieve users with optional filtering
 router.get("/", (req, res) => {
-  res.send(JSON.stringify({ users }, null, 4))
-})
+  let email = req.query.email
+  let lastName = req.query.lastName
 
-// GET by specific ID request: Retrieve a single user with email ID
-router.get("/:email", (req, res) => {
-  const email = req.params.email
-  const user = users.filter((user) => user.email === email)
-  res.send(user)
+  if (email) {
+    // If email is provided, filter by email
+    const user = users.filter((user) => user.email === email)
+    if (user.length > 0) {
+      return res.send(user)
+    } else {
+      return res.send(`There's no user with the email ${email}`)
+    }
+  } else if (lastName) {
+    // If lastName is provided, filter by lastName
+    let filteredUsers = users.filter((user) => user.lastName === lastName)
+    if (filteredUsers.length > 0) {
+      return res.send(JSON.stringify({ filteredUsers }, null, 4))
+    } else {
+      return res.send(`There's no user with the last name: ${lastName}`)
+    }
+  } else {
+    // If no query parameters are provided, return all users
+    return res.send(JSON.stringify({ users }, null, 4))
+  }
 })
 
 // POST request: Create a new user
@@ -78,6 +93,24 @@ router.delete("/:email", (req, res) => {
   users = users.filter((user) => user.email != email)
   // Send a success message as the response, indicating the user has been deleted
   res.send(`User with the email ${email} deleted.`)
+})
+
+// Function to convert a date string in the format "dd-mm-yyyy" to a Date object
+function getDateFromString(strDate) {
+  let [dd, mm, yyyy] = strDate.split("-")
+  return new Date(yyyy + "/" + mm + "/" + dd)
+}
+
+// Define a route handler for GET requests to the "/sort" endpoint
+router.get("/sort", (req, res) => {
+  // Sort the users array by DOB in ascending order
+  let sorted_users = users.sort(function (a, b) {
+    let d1 = getDateFromString(a.DOB)
+    let d2 = getDateFromString(b.DOB)
+    return d1 - d2
+  })
+  // Send the sorted_users array as the response to the client
+  res.send(sorted_users)
 })
 
 module.exports = router
