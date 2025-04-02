@@ -1,7 +1,7 @@
 {
   "name": "my_first_node_web_server",
   "version": "1.0.0",
-  "description": "I am learning how to create a pure Node.js server application",
+  "description": "I am learning how to create a Node.js server application",
   "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
